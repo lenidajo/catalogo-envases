@@ -2,14 +2,91 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Catálogo de Envases</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sweet Fragrance · Catálogo de Envases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+<style>
+    /* ── FLOATING BUTTON ── */
+    .fab-link {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(5, 15, 35, 0.88);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      backdrop-filter: blur(16px);
+      padding: 10px 16px 10px 12px;
+      border-radius: 50px;
+      text-decoration: none;
+      color: #e8f4ff;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: fabIn 0.6s 0.5s ease both;
+    }
+    .fab-link:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,212,255,0.2);
+      border-color: rgba(0,212,255,0.6);
+    }
+    .fab-icon { font-size: 1.4rem; line-height: 1; }
+    .fab-text { display: flex; flex-direction: column; gap: 1px; }
+    .fab-label { font-family: 'Orbitron', monospace; font-size: 0.58rem; letter-spacing: 0.12em; color: #00d4ff; text-transform: uppercase; }
+    .fab-sub { font-size: 0.7rem; font-weight: 600; color: #e8f4ff; }
+    @keyframes fabIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+</style>
 </head>
 <body>
 
-  <h1>Catálogo de Envases</h1>
-  <div id="catalogo" class="grid"></div>
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-glow g3"></div>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Sweet Fragrance Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="logo-name">Sweet Fragrance</span>
+          <span class="logo-tagline">Distribuciones · Envases Premium</span>
+        </div>
+      </div>
+      <div class="header-badge">✦ IVA Incluido ✦</div>
+    </div>
+    <h1 class="page-title">Catálogo de <em>Envases</em></h1>
+    <p class="page-sub">Precios por volumen · Calidad garantizada · Entrega inmediata</p>
+  </header>
+
+  <div class="price-legend">
+    <div class="legend-item"><span class="legend-dot d1"></span><span>1–4 Cajas</span></div>
+    <div class="legend-item"><span class="legend-dot d2"></span><span>5–9 Cajas</span></div>
+    <div class="legend-item"><span class="legend-dot d3"></span><span>10+ Cajas</span></div>
+  </div>
+
+  <main>
+    <div id="catalogo" class="grid"></div>
+  </main>
+
+  <footer class="footer">
+    <img src="logo.png" alt="Sweet Fragrance" class="footer-logo">
+    <p>Sweet Fragrance · Todos los precios en COP · IVA incluido</p>
+    <p class="footer-note">*No aplica venta por unidad · Mínimo una caja</p>
+  </footer>
 
   <script src="script.js"></script>
+
+  <!-- BOTÓN FLOTANTE → Catálogo Envases -->
+  <a class="fab-link" href="flipbook.html" title="Ver Catálogo de Envases">
+    <div class="fab-icon">📦</div>
+    <div class="fab-text">
+      <span class="fab-label">Catálogo</span>
+      <span class="fab-sub">Envases →</span>
+    </div>
+  </a>
+
 </body>
 </html>

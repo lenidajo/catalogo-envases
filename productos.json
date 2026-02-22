@@ -1,12 +1,32 @@
 [
   {
-    "nombre": "Envase Bala 30 ml",
-    "precio": 3000,
-    "imagen": "img/bala30.jpg"
+    "nombre": "Envase Bala",
+    "ml": 30,
+    "unidades_caja": 120,
+    "imagen": "img/bala30.jpg",
+    "color_fondo": "#0a0520",
+    "color_glow": "rgba(120,60,255,0.25)",
+    "badge": "🔥 Más vendido",
+    "precios": {
+      "1_4":   3000,
+      "5_9":   2800,
+      "10mas": 2600
+    },
+    "nota": "No aplica envase por unidad"
   },
   {
-    "nombre": "Envase Verne 30 ml",
-    "precio": 3200,
-    "imagen": "img/verne30.jpg"
+    "nombre": "Envase Verne",
+    "ml": 30,
+    "unidades_caja": 108,
+    "imagen": "img/verne30.jpg",
+    "color_fondo": "#001a15",
+    "color_glow": "rgba(0,200,120,0.22)",
+    "badge": "⚡ Entrega inmediata",
+    "precios": {
+      "1_4":   3200,
+      "5_9":   3000,
+      "10mas": 2800
+    },
+    "nota": "No aplica envase por unidad"
   }
 ]

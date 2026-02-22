@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sweet Fragrance · Catálogo de Envases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+  <style>
+    :root {
+      --bg:      #020810;
+      --cyan:    #00d4ff;
+      --cyan2:   #00ffcc;
+      --gold:    #ffd566;
+      --gold2:   #ffaa00;
+      --text:    #e8f4ff;
+      --muted:   rgba(232,244,255,0.48);
+      --border:  rgba(0,212,255,0.18);
+      --card:    #040d1e;
+      --font-h:  'Orbitron', monospace;
+      --font-b:  'Exo 2', sans-serif;
+      --pw:      480px;   /* page width */
+      --ph:      640px;   /* page height */
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ── */
+    .bg-glow { position:fixed;border-radius:50%;filter:blur(160px);pointer-events:none;z-index:0; }
+    .g1 { width:800px;height:800px;background:radial-gradient(circle,rgba(0,70,200,0.28),transparent 70%);top:-300px;left:-300px; }
+    .g2 { width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,0.16),transparent 70%);bottom:-100px;right:-200px; }
+
+    /* ── Scene area (behind the book) lighter than body ── */
+    .flipbook-scene {
+      background: linear-gradient(180deg, #0b1e3d 0%, #0d2244 50%, #091830 100%);
+      width: 100%;
+      box-shadow: inset 0 4px 40px rgba(0,0,0,0.5), inset 0 -4px 40px rgba(0,0,0,0.4);
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position:relative; z-index:10;
+      width:100%; padding:14px 28px;
+      display:flex; align-items:center; justify-content:center;
+      border-bottom:1px solid var(--border);
+      background:rgba(2,8,16,0.85);
+      backdrop-filter:blur(20px);
+      animation:fadeDown 0.6s ease both;
+    }
+    .topbar-center {
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+    }
+    .topbar-logo-row {
+      display:flex; align-items:center; gap:12px;
+    }
+    .topbar-logo-row img {
+      width:64px; height:64px; object-fit:contain;
+      filter:drop-shadow(0 0 14px rgba(0,212,255,0.75));
+      animation:pulse-logo 3s ease-in-out infinite;
+    }
+    .topbar-name {
+      font-family:var(--font-h); font-size:1.3rem; font-weight:900;
+      background:linear-gradient(90deg,var(--cyan),var(--cyan2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .topbar-tag {
+      font-size:0.63rem; letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--muted); text-align:center;
+    }
+    .topbar-left {
+      position:absolute; left:24px; top:50%; transform:translateY(-50%);
+      font-family:var(--font-h); font-size:0.6rem; color:var(--muted); letter-spacing:0.08em;
+    }
+    #page-num { color:var(--cyan); }
+    .topbar-right {
+      position:absolute; right:24px; top:50%; transform:translateY(-50%);
+      font-family:var(--font-h); font-size:0.55rem; letter-spacing:0.15em;
+      color:var(--gold); border:1px solid rgba(255,213,102,0.35);
+      background:rgba(255,213,102,0.07); padding:5px 12px; border-radius:100px;
+    }
+
+    /* ── FLIPBOOK SCENE ── */
+    .flipbook-scene {
+      position:relative; z-index:1;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding:36px 20px 16px;
+      flex:1;
+      /* bg set inline above */
+    }
+
+    #flipbook {
+      box-shadow:
+        -12px 0 40px rgba(0,0,0,0.9),
+         12px 0 40px rgba(0,0,0,0.9),
+         0 0 80px rgba(0,212,255,0.06);
+    }
+
+    /* ── PAGES SHARED ── */
+    .page {
+      width:var(--pw);
+      background:var(--card);
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* ── COVER ── */
+    .page-cover {
+      background:linear-gradient(160deg,#030d1e 0%,#000510 60%,#010915 100%);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; gap:18px; padding:40px 30px;
+    }
+    .cr { position:absolute;border-radius:50%;border:1px solid rgba(0,212,255,0.1); }
+    .cr1 { width:520px;height:520px;top:50%;left:50%;transform:translate(-50%,-50%); }
+    .cr2 { width:390px;height:390px;top:50%;left:50%;transform:translate(-50%,-50%); }
+    .cr3 { width:260px;height:260px;top:50%;left:50%;transform:translate(-50%,-50%); }
+    .cr-dot { position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan); }
+    .cd1 { top:8%;left:48%; }
+    .cd2 { top:50%;right:7%; }
+    .cd3 { bottom:10%;left:28%; }
+
+    .cover-logo {
+      width:140px;height:140px;object-fit:contain;
+      filter:drop-shadow(0 0 36px rgba(0,212,255,0.85));
+      animation:pulse-logo 2.5s ease-in-out infinite;
+      position:relative;z-index:2;
+    }
+    .cover-brand {
+      font-family:var(--font-h);font-size:1.7rem;font-weight:900;letter-spacing:0.04em;
+      background:linear-gradient(90deg,var(--cyan),var(--cyan2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      position:relative;z-index:2;
+    }
+    .cover-sub {
+      font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+      color:var(--muted);position:relative;z-index:2;
+    }
+    .cover-pill {
+      font-family:var(--font-h);font-size:0.82rem;font-weight:600;
+      color:var(--gold);border:1px solid rgba(255,213,102,0.3);
+      background:rgba(255,213,102,0.07);padding:8px 22px;
+      border-radius:100px;letter-spacing:0.08em;position:relative;z-index:2;
+    }
+    .cover-year {
+      font-family:var(--font-h);font-size:0.6rem;
+      color:rgba(0,212,255,0.35);letter-spacing:0.28em;position:relative;z-index:2;
+    }
+    .cover-hint {
+      position:absolute;bottom:22px;right:22px;
+      font-size:0.62rem;color:rgba(0,212,255,0.38);
+      letter-spacing:0.1em;text-transform:uppercase;
+      animation:blink 2s ease-in-out infinite;
+    }
+
+    /* ── BACK COVER ── */
+    .page-back {
+      background:linear-gradient(160deg,#030d1e,#000510);
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;gap:16px;padding:40px 30px;
+    }
+    .back-logo { width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(0,212,255,0.65)); }
+    .back-brand {
+      font-family:var(--font-h);font-size:1.1rem;font-weight:800;
+      background:linear-gradient(90deg,var(--cyan),var(--cyan2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .back-line { width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent); }
+    .back-text { font-size:0.78rem;color:var(--muted);line-height:1.7; }
+    .back-wa {
+      display:flex;align-items:center;gap:9px;
+      background:linear-gradient(135deg,#25D366,#128C7E);
+      color:white;text-decoration:none;
+      padding:12px 24px;border-radius:12px;
+      font-weight:600;font-size:0.82rem;letter-spacing:0.02em;
+    }
+    .back-iva {
+      font-size:0.6rem;color:var(--gold);letter-spacing:0.15em;
+      text-transform:uppercase;border:1px solid rgba(255,213,102,0.22);
+      padding:5px 14px;border-radius:100px;
+    }
+
+    /* ── BLANK PAGE ── */
+    .page-blank {
+      background:linear-gradient(160deg,#030d1e,#020810);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .blank-watermark {
+      font-family:var(--font-h);font-size:0.65rem;letter-spacing:0.25em;
+      color:rgba(0,212,255,0.08);text-transform:uppercase;
+      transform:rotate(-30deg);user-select:none;
+    }
+
+    /* ── PRODUCT PAGE ── */
+    .page-product {
+      background: linear-gradient(180deg, #040d20 0%, #010a18 100%);
+      display:flex; flex-direction:column;
+      border-left:1px solid rgba(0,212,255,0.1);
+      border-right:1px solid rgba(0,212,255,0.1);
+      overflow: hidden;
+    }
+
+    /* ── Logo strip ── */
+    .prod-logo-strip {
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 7px 14px;
+      border-bottom: 1px solid rgba(0,212,255,0.12);
+      background: rgba(2,8,20,0.7);
+      flex-shrink:0; z-index:2; position:relative;
+    }
+    .prod-logo-strip img {
+      width:34px; height:34px; object-fit:contain;
+      filter:drop-shadow(0 0 8px rgba(0,212,255,0.7));
+    }
+    .prod-logo-strip-name {
+      font-family:var(--font-h); font-size:0.55rem; font-weight:800;
+      letter-spacing:0.12em; text-transform:uppercase;
+      background:linear-gradient(90deg,var(--cyan),var(--cyan2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .prod-logo-strip-iva {
+      font-size:0.52rem; color:var(--gold); letter-spacing:0.08em;
+      border:1px solid rgba(255,213,102,0.3); padding:3px 8px; border-radius:100px;
+      background:rgba(255,213,102,0.06);
+    }
+
+    /* ── Image area with dynamic bg ── */
+    .prod-img-wrap {
+      position:relative; width:100%; height:300px;
+      overflow:hidden; flex-shrink:0;
+      display:flex; align-items:flex-end; justify-content:center;
+      transition: background 0.5s ease;
+    }
+    /* Atmospheric glow overlay */
+    .prod-img-wrap::before {
+      content:''; position:absolute; inset:0; z-index:1;
+      background: radial-gradient(ellipse at 50% 30%, var(--prod-glow, rgba(0,212,255,0.15)) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    /* Bottom fade into page */
+    .prod-img-wrap::after {
+      content:''; position:absolute; bottom:0; left:0; right:0;
+      height:80px; z-index:2;
+      background: linear-gradient(0deg, var(--prod-fade, #040d20) 0%, transparent 100%);
+      pointer-events:none;
+    }
+    .prod-img-wrap img {
+      width: 80%;
+      max-height: 230px;
+      object-fit: contain;
+      display:block;
+      position: relative; z-index:3;
+      filter: drop-shadow(0 12px 32px rgba(0,0,0,0.7));
+      margin-bottom: 38px; /* sit on podium */
+    }
+
+    /* Podium */
+    .prod-podium {
+      position:absolute; bottom:0; left:0; right:0; height:46px; z-index:2;
+    }
+    .prod-podium-stage {
+      position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+      width:80%; height:22px;
+      background: linear-gradient(180deg, #e8c547 0%, #a07c10 50%, #7a5c00 100%);
+      border-radius:5px 5px 0 0;
+      box-shadow: 0 -6px 24px rgba(201,162,39,0.5), inset 0 1px 0 rgba(255,235,120,0.6);
+    }
+    .prod-podium-base {
+      position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+      width:92%; height:14px;
+      background: linear-gradient(180deg, #7a5c00 0%, #4a3800 100%);
+      border-radius:3px 3px 0 0;
+    }
+    .prod-podium-shine {
+      position:absolute; top:3px; left:8%; right:8%; height:4px;
+      background: linear-gradient(90deg, transparent, rgba(255,240,150,0.7), transparent);
+      border-radius:2px;
+    }
+
+    /* Badges */
+    .prod-ml {
+      position:absolute; top:10px; right:12px; z-index:4;
+      background:rgba(0,0,0,0.8); border:1.5px solid var(--cyan);
+      color:var(--cyan); font-family:var(--font-h);
+      font-size:0.68rem; font-weight:700;
+      padding:6px 10px; border-radius:10px;
+      text-align:center; line-height:1.3;
+      box-shadow: 0 0 14px rgba(0,212,255,0.4);
+    }
+    .prod-unid {
+      position:absolute; bottom:14px; left:12px; z-index:4;
+      background:linear-gradient(135deg, #ffaa00, #ffd566);
+      color:#000; font-family:var(--font-h);
+      font-size:0.72rem; font-weight:900;
+      padding:6px 11px; border-radius:10px;
+      text-align:center; line-height:1.3;
+      box-shadow: 0 4px 14px rgba(255,170,0,0.5);
+    }
+
+    /* ── Product name ── */
+    .prod-name-banner {
+      padding: 10px 16px 8px;
+      flex-shrink:0;
+      border-bottom: 1px solid rgba(0,212,255,0.1);
+    }
+    .prod-name-label {
+      font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--cyan); opacity:0.65; margin-bottom:2px;
+    }
+    .prod-name-title {
+      font-family:var(--font-h); font-size:1.15rem; font-weight:900;
+      letter-spacing:0.02em; color:var(--text); line-height:1.1;
+    }
+    .prod-name-ml {
+      font-size:0.7rem; color:var(--cyan); font-weight:600;
+      letter-spacing:0.1em; margin-top:3px; opacity:0.85;
+    }
+
+    /* ── Body ── */
+    .prod-body {
+      padding:10px 14px 14px;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .prod-nota { font-size:0.67rem; color:var(--muted); font-style:italic; }
+
+    /* price table */
+    .tabla-wrap {
+      background:rgba(0,212,255,0.04);
+      border:1px solid rgba(0,212,255,0.14);
+      border-radius:10px; overflow:hidden;
+    }
+    .tabla-header {
+      background: linear-gradient(90deg, rgba(0,212,255,0.14), rgba(0,212,255,0.06));
+      padding:7px 12px;
+      font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--cyan); font-weight:700; display:flex; align-items:center; gap:5px;
+    }
+    .precio-table { width:100%; border-collapse:collapse; }
+    .precio-table tr { border-bottom:1px solid rgba(0,212,255,0.07); }
+    .precio-table tr:last-child { border-bottom:none; }
+    .precio-table td { padding:8px 12px; font-size:0.83rem; vertical-align:middle; }
+    .pt-rango { color:var(--muted); white-space:nowrap; width:50%; }
+    .pt-dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:7px; vertical-align:middle; }
+    .dot-1 { background:var(--text); }
+    .dot-2 { background:var(--cyan); box-shadow:0 0 6px var(--cyan); }
+    .dot-3 { background:var(--gold); box-shadow:0 0 6px var(--gold2); }
+    .pt-precio { font-family:var(--font-h); font-weight:800; font-size:0.9rem; text-align:right; }
+    .pt-precio.p1 { color:var(--text); }
+    .pt-precio.p2 { color:var(--cyan); }
+    .pt-precio.p3 { color:var(--gold); }
+
+    .prod-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      padding:13px 16px;
+      background:linear-gradient(135deg,#25D366,#128C7E);
+      color:white; text-decoration:none;
+      border-radius:10px; font-weight:700; font-size:0.88rem;
+      letter-spacing:0.02em; margin-top:4px;
+      font-family:var(--font-b);
+      transition:opacity 0.2s,transform 0.15s;
+      box-shadow: 0 4px 18px rgba(37,211,102,0.35);
+    }
+    .prod-btn:hover { opacity:0.88; transform:scale(0.97); }
+
+    /* ── NAV ── */
+    .nav-controls {
+      position:relative;z-index:10;
+      display:flex;align-items:center;gap:14px;
+      padding:20px 0 32px;
+      animation:fadeUp 0.5s 0.3s ease both;
+    }
+    .nav-btn {
+      display:flex;align-items:center;gap:7px;
+      padding:10px 22px;
+      background:rgba(0,212,255,0.07);
+      border:1px solid var(--border);
+      color:var(--cyan);font-family:var(--font-h);
+      font-size:0.65rem;font-weight:600;
+      letter-spacing:0.08em;text-transform:uppercase;
+      border-radius:10px;cursor:pointer;
+      transition:background 0.2s,box-shadow 0.2s,transform 0.15s;
+      backdrop-filter:blur(8px);
+    }
+    .nav-btn:hover:not(:disabled) {
+      background:rgba(0,212,255,0.15);
+      box-shadow:0 0 18px rgba(0,212,255,0.2);
+      transform:translateY(-1px);
+    }
+    .nav-btn:disabled { opacity:0.28;cursor:not-allowed; }
+    .nav-label {
+      font-family:var(--font-h);font-size:0.6rem;
+      color:var(--muted);letter-spacing:0.08em;min-width:100px;text-align:center;
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      position:relative;z-index:10;width:100%;
+      text-align:center;padding:14px 24px;
+      border-top:1px solid var(--border);
+      font-size:0.68rem;color:var(--muted);
+      background:rgba(2,8,16,0.6);
+    }
+
+    /* ── LOADER ── */
+    #loader {
+      position:fixed;inset:0;z-index:999;
+      background:var(--bg);
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:18px;
+    }
+    .loader-logo {
+      width:110px;height:110px;object-fit:contain;
+      filter:drop-shadow(0 0 24px rgba(0,212,255,0.85));
+      animation:pulse-logo 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      font-family:var(--font-h);font-size:0.68rem;
+      color:var(--cyan);letter-spacing:0.22em;text-transform:uppercase;
+      animation:blink 1.2s ease-in-out infinite;
+    }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse-logo {
+      0%,100%{filter:drop-shadow(0 0 14px rgba(0,212,255,0.55))}
+      50%    {filter:drop-shadow(0 0 32px rgba(0,212,255,1))}
+    }
+    @keyframes blink { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:600px){
+      .topbar-left,.topbar-right{display:none}
+    }
+
+    /* ── FLOATING BUTTON ── */
+    .fab-link {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(4, 13, 30, 0.88);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      backdrop-filter: blur(16px);
+      padding: 10px 16px 10px 12px;
+      border-radius: 50px;
+      text-decoration: none;
+      color: var(--text);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+    .fab-link:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,212,255,0.2);
+      border-color: rgba(0,212,255,0.6);
+    }
+    .fab-icon { font-size: 1.4rem; line-height: 1; }
+    .fab-text { display: flex; flex-direction: column; gap: 1px; }
+    .fab-label { font-family: var(--font-h); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--cyan); text-transform: uppercase; }
+    .fab-sub { font-size: 0.7rem; font-weight: 600; color: var(--text); }
+
+    /* ── CATEGORY PAGE ── */
+    .page-category {
+      background: linear-gradient(160deg, #030d1e 0%, #000510 100%);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding: 30px 24px; gap: 16px;
+      border-left:1px solid rgba(0,212,255,0.1);
+      border-right:1px solid rgba(0,212,255,0.1);
+    }
+    .cat-logo { width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,212,255,0.7)); margin-bottom:4px; }
+    .cat-title {
+      font-family:var(--font-h); font-size:0.62rem; font-weight:700;
+      letter-spacing:0.2em; text-transform:uppercase; color:var(--cyan);
+      margin-bottom: 4px;
+    }
+    .cat-heading {
+      font-family:var(--font-h); font-size:1.2rem; font-weight:900;
+      color:var(--text); text-align:center; line-height:1.2;
+      margin-bottom:8px;
+    }
+    .cat-divider { width:50px; height:2px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); margin-bottom:8px; }
+    .cat-list { width:100%; display:flex; flex-direction:column; gap:8px; }
+    .cat-item {
+      display:flex; align-items:center; gap:12px;
+      background:rgba(0,212,255,0.05);
+      border:1px solid rgba(0,212,255,0.12);
+      border-radius:12px; padding:10px 14px;
+      text-decoration:none; color:var(--text);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .cat-item-icon { font-size:1.3rem; flex-shrink:0; }
+    .cat-item-info { display:flex; flex-direction:column; gap:2px; flex:1; }
+    .cat-item-name { font-family:var(--font-h); font-size:0.72rem; font-weight:700; color:var(--text); }
+    .cat-item-sub  { font-size:0.65rem; color:var(--muted); }
+    .cat-item-page { font-family:var(--font-h); font-size:0.58rem; color:var(--cyan); opacity:0.7; }
+    .cat-bottom { margin-top:8px; text-align:center; }
+    .cat-iva { font-size:0.62rem; color:var(--gold); letter-spacing:0.12em;
+      border:1px solid rgba(255,213,102,0.25); padding:5px 14px; border-radius:100px;
+      background:rgba(255,213,102,0.06); }
+
+    /* ── SALES PSYCHOLOGY ELEMENTS ── */
+
+    /* Urgency badge on image */
+    .prod-urgency {
+      position:absolute; top:10px; left:12px; z-index:4;
+      display:flex; flex-direction:column; gap:5px;
+    }
+    .urgency-tag {
+      display:inline-flex; align-items:center; gap:5px;
+      font-family:var(--font-h); font-size:0.58rem; font-weight:700;
+      letter-spacing:0.05em; padding:5px 10px; border-radius:100px;
+      white-space:nowrap; animation: pulse-tag 2s ease-in-out infinite;
+    }
+    .tag-hot {
+      background: linear-gradient(135deg, #ff4500, #ff6b00);
+      color: white; box-shadow: 0 0 14px rgba(255,69,0,0.5);
+    }
+    .tag-stock {
+      background: linear-gradient(135deg, #1a0a00, #2a1200);
+      color: #ffaa44; border: 1px solid rgba(255,140,0,0.4);
+      box-shadow: 0 0 10px rgba(255,100,0,0.25);
+    }
+
+    /* Price section */
+    .prod-price-hero {
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,212,255,0.1);
+      flex-shrink:0;
+    }
+    .price-from {
+      display:flex; flex-direction:column; gap:1px;
+    }
+    .price-desde {
+      font-size:0.58rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase;
+    }
+    .price-tachado {
+      font-family:var(--font-h); font-size:0.78rem; color:var(--muted);
+      text-decoration: line-through; opacity:0.6;
+    }
+    .price-actual {
+      font-family:var(--font-h); font-size:1.4rem; font-weight:900;
+      color: var(--gold); line-height:1;
+      text-shadow: 0 0 20px rgba(255,213,102,0.4);
+    }
+    .price-cu { font-size:0.6rem; color:var(--muted); }
+    .price-saving {
+      background: linear-gradient(135deg, rgba(37,211,102,0.15), rgba(18,140,126,0.15));
+      border: 1px solid rgba(37,211,102,0.3);
+      border-radius: 10px; padding: 8px 12px; text-align:center;
+    }
+    .saving-label { font-size:0.58rem; color:rgba(37,211,102,0.8); letter-spacing:0.08em; text-transform:uppercase; }
+    .saving-amount { font-family:var(--font-h); font-size:0.85rem; font-weight:800; color:#25D366; }
+    .saving-desc { font-size:0.6rem; color:var(--muted); }
+
+    /* Social proof */
+    .prod-social {
+      display:flex; align-items:center; gap:8px;
+      padding: 6px 14px;
+      background: rgba(255,213,102,0.04);
+      border-bottom: 1px solid rgba(255,213,102,0.1);
+      flex-shrink:0;
+    }
+    .social-stars { color: var(--gold); font-size:0.7rem; letter-spacing:1px; }
+    .social-text { font-size:0.65rem; color:var(--muted); }
+    .social-text strong { color:var(--text); }
+    .social-badge {
+      margin-left:auto;
+      background: linear-gradient(135deg, rgba(255,170,0,0.15), rgba(255,213,102,0.08));
+      border: 1px solid rgba(255,213,102,0.3);
+      color: var(--gold); font-family:var(--font-h);
+      font-size:0.52rem; font-weight:700; letter-spacing:0.08em;
+      padding:3px 8px; border-radius:100px;
+    }
+
+    @keyframes pulse-tag {
+      0%,100% { transform:scale(1); }
+      50%      { transform:scale(1.04); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img src="logo.png" alt="Sweet Fragrance" class="loader-logo">
+    <div class="loader-text">Cargando catálogo...</div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span class="topbar-left">Pág. <span id="page-num">1</span> / <span id="page-total">—</span></span>
+    <div class="topbar-center">
+      <div class="topbar-logo-row">
+        <img src="logo.png" alt="Sweet Fragrance">
+        <span class="topbar-name">Sweet Fragrance</span>
+      </div>
+      <span class="topbar-tag">Distribuciones · Envases Premium</span>
+    </div>
+    <div class="topbar-right">✦ IVA Incluido ✦</div>
+  </div>
+
+  <!-- FLIPBOOK -->
+  <div class="flipbook-scene">
+    <div id="flipbook"></div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-controls">
+    <button class="nav-btn" id="btn-prev" disabled>← Anterior</button>
+    <span class="nav-label" id="nav-label">Portada</span>
+    <button class="nav-btn" id="btn-next">Siguiente →</button>
+  </div>
+
+  <div class="site-footer">
+    Sweet Fragrance · Precios en COP · IVA incluido · *No aplica venta por unidad
+  </div>
+
+  <script>
+    const WHATSAPP = "573209373528"; // ← Tu número aquí
+
+    const waIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.057 23.571a.5.5 0 0 0 .611.625l5.882-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.034-1.382l-.36-.214-3.733.979.997-3.648-.235-.374A9.818 9.818 0 1 1 12 21.818z"/></svg>`;
+    const boxIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM4 5h16a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2z"/></svg>`;
+
+    function cop(v){ return "$" + v.toLocaleString("es-CO"); }
+
+    function buildCover(){
+      return `<div class="page page-cover">
+        <div class="cr cr1"></div><div class="cr cr2"></div><div class="cr cr3"></div>
+        <div class="cr-dot cd1"></div><div class="cr-dot cd2"></div><div class="cr-dot cd3"></div>
+        <img src="logo.png" alt="" class="cover-logo">
+        <div class="cover-brand">Sweet Fragrance</div>
+        <div class="cover-sub">Distribuciones · Envases Premium</div>
+        <div class="cover-pill">📦 Catálogo de Envases</div>
+        <div class="cover-year">COLECCIÓN 2025</div>
+        <div class="cover-hint">Pasar página →</div>
+      </div>`;
+    }
+
+    function buildBlank(){
+      return `<div class="page page-blank"><div class="blank-watermark">Sweet Fragrance</div></div>`;
+    }
+
+    function buildBack(){
+      const msg = encodeURIComponent("Hola Sweet Fragrance 👋\nQuiero información sobre su catálogo de envases.");
+      return `<div class="page page-back">
+        <div class="cr cr1"></div><div class="cr cr2"></div>
+        <img src="logo.png" alt="" class="back-logo">
+        <div class="back-brand">Sweet Fragrance</div>
+        <div class="back-line"></div>
+        <div class="back-text">Envases premium para tu negocio<br>Precios por volumen · IVA incluido<br>Entrega inmediata</div>
+        <a class="back-wa" href="https://wa.me/${WHATSAPP}?text=${msg}" target="_blank">${waIcon} Contáctanos por WhatsApp</a>
+        <div class="back-iva">✦ IVA Incluido en todos los precios ✦</div>
+      </div>`;
+    }
+
+    function buildCategory(productos){
+      const items = productos.map((p, i) => {
+        const ml = p.ml ? p.ml + " ML" : "";
+        const p1 = (p.precios && p.precios["1_4"]) || p.precio || 0;
+        return `
+          <div class="cat-item">
+            <div class="cat-item-icon">📦</div>
+            <div class="cat-item-info">
+              <span class="cat-item-name">${p.nombre}</span>
+              <span class="cat-item-sub">${ml} · ${p.unidades_caja || ""}  unid/caja</span>
+            </div>
+            <span class="cat-item-page">Pág. ${i + 3} →</span>
+          </div>`;
+      }).join("");
+
+      return `<div class="page page-category">
+        <img src="logo.png" alt="" class="cat-logo">
+        <div class="cat-title">Sweet Fragrance</div>
+        <div class="cat-heading">Índice de<br>Productos</div>
+        <div class="cat-divider"></div>
+        <div class="cat-list">${items}</div>
+        <div class="cat-bottom">
+          <div class="cat-iva">✦ IVA Incluido en todos los precios ✦</div>
+        </div>
+      </div>`;
+    }
+
+    function buildProduct(prod){
+      if(!prod) return buildBlank();
+      const p  = prod.precios || {};
+      const p1 = p["1_4"]   || prod.precio || 0;
+      const p2 = p["5_9"]   || prod.precio || 0;
+      const p3 = p["10mas"] || prod.precio || 0;
+      const ml   = prod.ml || "";
+      const unid = prod.unidades_caja || "";
+      const nota = prod.nota || "";
+      const msg  = encodeURIComponent(`Hola Sweet Fragrance 👋\nMe interesa: *${prod.nombre}${ml?" "+ml+"ml":""}*\n¿Precio y disponibilidad?`);
+      const waUrl= `https://wa.me/${WHATSAPP}?text=${msg}`;
+      const ph   = `https://placehold.co/480x320/040d20/00d4ff?text=${encodeURIComponent(prod.nombre)}`;
+
+      // Color dinámico por producto (definido en JSON como "color_fondo")
+      // Si no tiene, usa el default azul oscuro
+      const bgColor  = prod.color_fondo  || "#040d20";
+      const glowColor= prod.color_glow   || "rgba(0,212,255,0.15)";
+
+      // Calcular ahorro máximo (precio 1-4 vs precio 10+)
+      const ahorro = p1 - p3;
+      const porcAhorro = Math.round((ahorro / p1) * 100);
+      // Precio "antes" simulado (precio de referencia +15%)
+      const precioAntes = Math.round(p1 * 1.15 / 100) * 100;
+
+      return `<div class="page page-product" style="background: linear-gradient(180deg, ${bgColor} 0%, #010a18 100%);">
+
+        <!-- Logo strip -->
+        <div class="prod-logo-strip">
+          <img src="logo.png" alt="Sweet Fragrance">
+          <span class="prod-logo-strip-name">Sweet Fragrance</span>
+          <span class="prod-logo-strip-iva">✦ IVA Incluido</span>
+        </div>
+
+        <!-- Imagen con fondo dinámico, urgencia y podio -->
+        <div class="prod-img-wrap"
+             style="background: radial-gradient(ellipse at 50% 60%, ${bgColor} 0%, #010a18 100%);
+                    --prod-glow: ${glowColor};
+                    --prod-fade: ${bgColor};">
+          <img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.src='${ph}'">
+
+          <!-- Urgency badges top-left -->
+          <div class="prod-urgency">
+            <span class="urgency-tag tag-hot">🔥 Más vendido</span>
+            <span class="urgency-tag tag-stock">⚡ Stock limitado</span>
+          </div>
+
+          ${ml?`<div class="prod-ml">${ml}<br>ML</div>`:""}
+          ${unid?`<div class="prod-unid">${unid}<br>UNID.</div>`:""}
+          <div class="prod-podium">
+            <div class="prod-podium-stage"><div class="prod-podium-shine"></div></div>
+            <div class="prod-podium-base"></div>
+          </div>
+        </div>
+
+        <!-- Nombre del producto -->
+        <div class="prod-name-banner" style="border-left: 4px solid ${glowColor};">
+          <div class="prod-name-label">Envase</div>
+          <div class="prod-name-title">${prod.nombre}</div>
+          ${ml?`<div class="prod-name-ml">${ml} ML · Caja Surtida</div>`:""}
+        </div>
+
+        <!-- Precio héroe + ahorro -->
+        <div class="prod-price-hero">
+          <div class="price-from">
+            <span class="price-desde">Desde</span>
+            <span class="price-tachado">${cop(precioAntes)}</span>
+            <span class="price-actual">${cop(p1)} <span class="price-cu">c/u</span></span>
+          </div>
+          <div class="price-saving">
+            <div class="saving-label">Ahorro máximo</div>
+            <div class="saving-amount">${cop(ahorro)}</div>
+            <div class="saving-desc">comprando 10+ cajas (${porcAhorro}% off)</div>
+          </div>
+        </div>
+
+        <!-- Prueba social -->
+        <div class="prod-social">
+          <span class="social-stars">★★★★★</span>
+          <span class="social-text"><strong>+120 clientes</strong> mayoristas satisfechos</span>
+          <span class="social-badge">🏪 MAYORISTA</span>
+        </div>
+
+        <!-- Precios escalonados -->
+        <div class="prod-body">
+          ${nota?`<div class="prod-nota">*${nota}</div>`:""}
+          <div class="tabla-wrap">
+            <div class="tabla-header">${boxIcon} Precio por unidad · Según cantidad</div>
+            <table class="precio-table">
+              <tr><td class="pt-rango"><span class="pt-dot dot-1"></span>1–4 Cajas</td><td class="pt-precio p1">${cop(p1)} <small style="font-weight:400;font-size:0.65rem;opacity:0.6">c/u</small></td></tr>
+              <tr><td class="pt-rango"><span class="pt-dot dot-2"></span>5–9 Cajas</td><td class="pt-precio p2">${cop(p2)} <small style="font-weight:400;font-size:0.65rem;opacity:0.6">c/u</small></td></tr>
+              <tr style="background:rgba(255,213,102,0.06)"><td class="pt-rango"><span class="pt-dot dot-3"></span>10+ Cajas <span style="font-size:0.55rem;color:var(--gold);margin-left:4px">★ MEJOR PRECIO</span></td><td class="pt-precio p3">${cop(p3)} <small style="font-weight:400;font-size:0.65rem;opacity:0.6">c/u</small></td></tr>
+            </table>
+          </div>
+          <a class="prod-btn" href="${waUrl}" target="_blank" rel="noopener"
+             style="background:linear-gradient(135deg,#25D366,#128C7E);">
+            ${waIcon} ¡Quiero este precio ahora!
+          </a>
+        </div>
+      </div>`;
+    }
+
+    async function init(){
+      try {
+        const res  = await fetch("productos.json");
+        const data = await res.json();
+        const fb   = document.getElementById("flipbook");
+
+        // Calcular tamaño del libro según pantalla
+        const maxW  = Math.min(window.innerWidth - 40, 1100);
+        const pw    = Math.floor(maxW / 2);          // ancho de cada página
+        const ph    = Math.floor(pw * 1.35);         // alto proporcional
+        const bookW = pw * 2;
+
+        // Inyectar tamaño dinámico en CSS
+        document.documentElement.style.setProperty('--pw', pw + 'px');
+        document.documentElement.style.setProperty('--ph', ph + 'px');
+
+        // Construir páginas
+        // Pág 1: portada
+        fb.innerHTML += buildCover();
+
+        // Pág 2: índice de productos (página izquierda al abrir)
+        fb.innerHTML += buildCategory(data);
+
+        // Pares de productos (izquierda + derecha)
+        for(let i = 0; i < data.length; i += 2){
+          fb.innerHTML += buildProduct(data[i]);
+          fb.innerHTML += buildProduct(data[i+1] || null);
+        }
+
+        // Contraportada
+        fb.innerHTML += buildBack();
+
+        const totalPages = fb.children.length;
+        document.getElementById("page-total").textContent = totalPages;
+
+        // Init turn.js en modo libro doble
+        $(fb).turn({
+          width:  bookW,
+          height: ph,
+          autoCenter: true,
+          display: "double",
+          acceleration: true,
+          gradients: true,
+          elevation: 60,
+          when: {
+            turned: function(e, page){
+              document.getElementById("page-num").textContent = page;
+              updateNav(page, totalPages);
+              updateLabel(page, totalPages, data.length);
+            }
+          }
+        });
+
+        document.getElementById("btn-prev").addEventListener("click", () => $(fb).turn("previous"));
+        document.getElementById("btn-next").addEventListener("click", () => $(fb).turn("next"));
+
+        // Teclado ← →
+        document.addEventListener("keydown", e => {
+          if(e.key === "ArrowRight") $(fb).turn("next");
+          if(e.key === "ArrowLeft")  $(fb).turn("previous");
+        });
+
+        setTimeout(() => {
+          document.getElementById("loader").style.display = "none";
+        }, 700);
+
+      } catch(err){
+        console.error(err);
+        document.getElementById("loader").innerHTML = `
+          <div style="text-align:center;color:rgba(232,244,255,0.5);padding:40px">
+            <p style="font-size:2rem;margin-bottom:12px">⚠️</p>
+            <p style="font-family:'Orbitron',monospace;font-size:0.75rem;letter-spacing:0.1em">
+              Error cargando productos.json
+            </p>
+          </div>`;
+      }
+    }
+
+    function updateNav(page, total){
+      document.getElementById("btn-prev").disabled = (page <= 1);
+      document.getElementById("btn-next").disabled = (page >= total);
+    }
+
+    function updateLabel(page, total, prodCount){
+      const lbl = document.getElementById("nav-label");
+      if(page === 1) lbl.textContent = "Portada";
+      else if(page >= total) lbl.textContent = "Contraportada";
+      else lbl.textContent = `Hoja ${Math.ceil((page-1)/2)} de ${Math.ceil(prodCount/2)}`;
+    }
+
+    init();
+  </script>
+
+  <!-- BOTÓN FLOTANTE → Catálogo Perfumes -->
+  <a class="fab-link" href="index.html" title="Ver Catálogo de Perfumes">
+    <div class="fab-icon">🌸</div>
+    <div class="fab-text">
+      <span class="fab-label">Catálogo</span>
+      <span class="fab-sub">Perfumes →</span>
+    </div>
+  </a>
+
+</body>
+</html>
