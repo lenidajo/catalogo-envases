@@ -1,22 +1,41 @@
 body {
   font-family: Arial, sans-serif;
+  background: #f5f6fa;
   padding: 20px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
 .card {
-  border: 1px solid #ddd;
-  padding: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
   text-align: center;
-  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .card img {
   width: 100%;
-  height: auto;
+  height: 220px;
+  object-fit: contain;
+}
+
+.precio {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 14px;
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
 }

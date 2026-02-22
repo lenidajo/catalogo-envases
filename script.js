@@ -1,18 +1,29 @@
-fetch('productos.json')
-  .then(r => r.json())
-  .then(data => {
-    const cont = document.getElementById('catalogo');
+console.log("JS cargado OK");
 
-    data.forEach(p => {
-      cont.innerHTML += `
-        <div class="card">
-          <img src="${p.imagen}" alt="${p.nombre}">
-          <h3>${p.nombre}</h3>
-          <p>$${p.precio.toLocaleString()}</p>
-          <a href="https://wa.me/573209373528?text=Hola%20quiero%20${encodeURIComponent(p.nombre)}" target="_blank">
-            <button>Comprar</button>
-          </a>
-        </div>
+fetch("productos.json")
+  .then(res => res.json())
+  .then(data => {
+    const catalogo = document.getElementById("catalogo");
+
+    data.forEach(prod => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const mensaje = encodeURIComponent(
+        `Hola, quiero el ${prod.nombre}`
+      );
+
+      card.innerHTML = `
+        <img src="${prod.imagen}" alt="${prod.nombre}">
+        <h3>${prod.nombre}</h3>
+        <p class="precio">$${prod.precio.toLocaleString()}</p>
+        <a class="btn" target="_blank"
+           href="https://wa.me/57TU_NUMERO?text=${mensaje}">
+           Comprar por WhatsApp
+        </a>
       `;
+
+      catalogo.appendChild(card);
     });
-  });
+  })
+  .catch(err => console.error("Error cargando productos:", err));

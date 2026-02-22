@@ -2,11 +2,11 @@
   {
     "nombre": "Envase Bala 30 ml",
     "precio": 3000,
-    "imagen": "https://via.placeholder.com/200"
+    "imagen": "img/bala30.jpg"
   },
   {
     "nombre": "Envase Verne 30 ml",
     "precio": 3200,
-    "imagen": "https://via.placeholder.com/200"
+    "imagen": "img/verne30.jpg"
   }
 ]
