@@ -1,15 +1,348 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sweet Fragrance · Catálogo de Envases</title>
+  <meta name="theme-color" content="#020810">
+
+  <!-- SEO básico -->
+  <title>Sweet Fragrance · Catálogo Mayorista de Perfumes</title>
+  <meta name="description" content="Distribuciones Sweet Fragrance — Perfumes y Envases Premium al por mayor. Precios escalados, IVA incluido, entrega inmediata.">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
-<style>
-    /* ── FLOATING BUTTON ── */
-    .fab-link {
+</head>
+<body>
+
+  <!-- ══════════════════════════════════
+       COUNTDOWN BANNER (auto-inyectado
+       por script.js, pero si falla
+       queda aquí como fallback)
+       ══════════════════════════════════ -->
+  <div id="countdown-banner"></div>
+
+  <!-- ══════════════════════════════════
+       TOPBAR
+       ══════════════════════════════════ -->
+  <header class="topbar">
+    <img src="logo.png" alt="Sweet Fragrance" class="topbar-logo">
+    <div class="topbar-center">
+      <span class="topbar-name">Sweet Fragrance</span>
+      <span class="topbar-tag">Distribuciones · Perfumes &amp; Envases Premium</span>
+    </div>
+    <span class="topbar-iva">✦ IVA Incluido ✦</span>
+  </header>
+
+  <!-- ══════════════════════════════════
+       SOCIAL PROOF TICKER
+       ══════════════════════════════════ -->
+  <div id="social-ticker">Cargando actividad en tiempo real...</div>
+
+  <!-- ══════════════════════════════════
+       HERO
+       ══════════════════════════════════ -->
+  <section class="hero">
+    <!-- Fondo animado tipo partículas -->
+    <div class="hero-particles" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <p class="hero-eyebrow">🌸 Catálogo Mayorista 2025</p>
+    <h1 class="hero-brand">Sweet Fragrance</h1>
+    <p class="hero-sub">Distribuciones · Perfumes Premium al Por Mayor</p>
+    <span class="hero-pill">📦 Precios escalados · Stock disponible · IVA incluido</span>
+
+    <!-- Stats rápidas -->
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num">+120</span>
+        <span class="stat-label">Clientes activos</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="stat-num">48h</span>
+        <span class="stat-label">Entrega máxima</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="stat-num">0%</span>
+        <span class="stat-label">Cobro extra IVA</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       CATÁLOGO GRID
+       ══════════════════════════════════ -->
+  <main>
+    <!-- Label sección -->
+    <div class="section-label">
+      <span class="section-line"></span>
+      <span class="section-title">Nuestros Productos</span>
+      <span class="section-line"></span>
+    </div>
+
+    <div id="catalogo">
+      <!-- Cards inyectadas por script.js -->
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════
+       FOOTER
+       ══════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-logo-row">
+      <img src="logo.png" alt="Sweet Fragrance" class="footer-logo">
+      <span class="footer-brand">Sweet Fragrance</span>
+    </div>
+    <div class="footer-divider"></div>
+    <p>Precios en COP · IVA incluido · *No aplica venta por unidad</p>
+    <p style="margin-top:5px;opacity:0.4;font-size:0.6rem;letter-spacing:0.12em">
+      DISTRIBUCIONES SWEET FRAGRANCE © 2025
+    </p>
+  </footer>
+
+  <!-- ══════════════════════════════════
+       BG GLOWS (decorativos)
+       ══════════════════════════════════ -->
+  <div class="bg-glow g1" aria-hidden="true"></div>
+  <div class="bg-glow g2" aria-hidden="true"></div>
+  <div class="bg-glow g3" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════
+       FAB FLOTANTE → CATÁLOGO ENVASES
+       ══════════════════════════════════ -->
+  <a class="fab-catalog" href="flipbook.html" title="Ver Catálogo de Envases" aria-label="Catálogo de Envases">
+    <span class="fab-icon">📦</span>
+    <span class="fab-text">
+      <span class="fab-label">Catálogo</span>
+      <span class="fab-sub">Envases →</span>
+    </span>
+  </a>
+
+  <!-- ══════════════════════════════════
+       FAB FLOTANTE → WHATSAPP
+       ══════════════════════════════════ -->
+  <a class="fab-wa"
+     href="https://wa.me/573209373528?text=Hola%20Sweet%20Fragrance%20👋%0AQuiero%20información%20sobre%20su%20catálogo."
+     target="_blank" rel="noopener noreferrer"
+     title="Contactar por WhatsApp" aria-label="WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.057 23.571a.5.5 0 0 0 .611.625l5.882-1.54A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.034-1.382l-.36-.214-3.733.979.997-3.648-.235-.374A9.818 9.818 0 1 1 12 21.818z"/>
+    </svg>
+  </a>
+
+  <!-- ══════════════════════════════════
+       ESTILOS EXTRA (hero stats, section
+       label, footer, fab-catalog, partículas)
+       ══════════════════════════════════ -->
+  <style>
+    /* ── TOPBAR CENTER ── */
+    .topbar-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      margin: 0 12px;
+    }
+
+    /* ── HERO EXTRAS ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 52px 24px 36px;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+      margin-bottom: 8px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .hero-brand {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan2) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(0,212,255,0.3));
+      animation: hero-glow 4s ease-in-out infinite, fadeDown 0.5s 0.1s ease both;
+    }
+
+    .hero-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+      animation: fadeDown 0.5s 0.2s ease both;
+    }
+
+    .hero-pill {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      border: 1px solid rgba(255,213,102,0.3);
+      background: rgba(255,213,102,0.06);
+      padding: 8px 22px;
+      border-radius: 100px;
+      animation: float-pill 3s ease-in-out infinite, fadeDown 0.5s 0.3s ease both;
+    }
+
+    /* Hero stats */
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 28px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .stat-num {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--cyan);
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(0,212,255,0.5);
+    }
+
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero-stat-divider {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(180deg, transparent, rgba(0,212,255,0.3), transparent);
+    }
+
+    /* Hero partículas */
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .hero-particles span {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      background: var(--cyan);
+      opacity: 0.12;
+      animation: particle-float linear infinite;
+    }
+
+    .hero-particles span:nth-child(1) { width:4px;height:4px; left:15%; animation-duration:8s;  animation-delay:0s;   top:80%; }
+    .hero-particles span:nth-child(2) { width:3px;height:3px; left:35%; animation-duration:12s; animation-delay:2s;   top:90%; }
+    .hero-particles span:nth-child(3) { width:5px;height:5px; left:55%; animation-duration:9s;  animation-delay:4s;   top:85%; background:var(--gold); }
+    .hero-particles span:nth-child(4) { width:2px;height:2px; left:70%; animation-duration:11s; animation-delay:1s;   top:92%; }
+    .hero-particles span:nth-child(5) { width:4px;height:4px; left:80%; animation-duration:7s;  animation-delay:3s;   top:88%; background:var(--cyan2); }
+    .hero-particles span:nth-child(6) { width:3px;height:3px; left:92%; animation-duration:10s; animation-delay:0.5s; top:95%; }
+
+    @keyframes particle-float {
+      0%   { transform: translateY(0)   rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.15; }
+      90%  { opacity: 0.1; }
+      100% { transform: translateY(-400px) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 28px 0;
+      margin-bottom: -4px;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.25), transparent);
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+
+    /* ── FOOTER EXTRAS ── */
+    .footer-logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .footer-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(0,212,255,0.5));
+    }
+
+    .footer-brand {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan), var(--cyan2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-divider {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      margin: 0 auto 10px;
+    }
+
+    /* ── FAB CATÁLOGO ENVASES ── */
+    .fab-catalog {
       position: fixed;
       bottom: 28px;
       left: 28px;
@@ -17,76 +350,79 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(5, 15, 35, 0.88);
-      border: 1px solid rgba(0, 212, 255, 0.35);
+      background: rgba(4,13,30,0.88);
+      border: 1px solid rgba(0,212,255,0.35);
       backdrop-filter: blur(16px);
       padding: 10px 16px 10px 12px;
       border-radius: 50px;
       text-decoration: none;
-      color: #e8f4ff;
+      color: var(--text);
       box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.1);
       transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-      animation: fabIn 0.6s 0.5s ease both;
+      animation: fadeUp 0.6s 0.5s ease both;
     }
-    .fab-link:hover {
+
+    .fab-catalog:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,212,255,0.2);
       border-color: rgba(0,212,255,0.6);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(0,212,255,0.2);
     }
-    .fab-icon { font-size: 1.4rem; line-height: 1; }
-    .fab-text { display: flex; flex-direction: column; gap: 1px; }
-    .fab-label { font-family: 'Orbitron', monospace; font-size: 0.58rem; letter-spacing: 0.12em; color: #00d4ff; text-transform: uppercase; }
-    .fab-sub { font-size: 0.7rem; font-weight: 600; color: #e8f4ff; }
-    @keyframes fabIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-</style>
-</head>
-<body>
 
-  <div class="bg-glow g1"></div>
-  <div class="bg-glow g2"></div>
-  <div class="bg-glow g3"></div>
+    .fab-icon { font-size: 1.3rem; line-height: 1; }
 
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo-wrap">
-        <img src="logo.png" alt="Sweet Fragrance Logo" class="logo-img">
-        <div class="logo-text">
-          <span class="logo-name">Sweet Fragrance</span>
-          <span class="logo-tagline">Distribuciones · Envases Premium</span>
-        </div>
-      </div>
-      <div class="header-badge">✦ IVA Incluido ✦</div>
-    </div>
-    <h1 class="page-title">Catálogo de <em>Envases</em></h1>
-    <p class="page-sub">Precios por volumen · Calidad garantizada · Entrega inmediata</p>
-  </header>
+    .fab-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
 
-  <div class="price-legend">
-    <div class="legend-item"><span class="legend-dot d1"></span><span>1–4 Cajas</span></div>
-    <div class="legend-item"><span class="legend-dot d2"></span><span>5–9 Cajas</span></div>
-    <div class="legend-item"><span class="legend-dot d3"></span><span>10+ Cajas</span></div>
-  </div>
+    .fab-label {
+      font-family: var(--font-head);
+      font-size: 0.56rem;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
 
-  <main>
-    <div id="catalogo" class="grid"></div>
-  </main>
+    .fab-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text);
+    }
 
-  <footer class="footer">
-    <img src="logo.png" alt="Sweet Fragrance" class="footer-logo">
-    <p>Sweet Fragrance · Todos los precios en COP · IVA incluido</p>
-    <p class="footer-note">*No aplica venta por unidad · Mínimo una caja</p>
-  </footer>
+    /* ── KEYFRAMES ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes hero-glow {
+      0%,100% { filter: drop-shadow(0 0 30px rgba(0,212,255,0.3)); }
+      50%      { filter: drop-shadow(0 0 60px rgba(0,212,255,0.65)); }
+    }
+
+    @keyframes float-pill {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-5px); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .hero-stats { gap: 18px; }
+      .stat-num   { font-size: 1.2rem; }
+      .topbar-iva { display: none; }
+      .fab-catalog { bottom: 16px; left: 16px; }
+      .fab-wa      { bottom: 16px; right: 16px; }
+    }
+  </style>
+
+  <!-- SCRIPT PRINCIPAL -->
   <script src="script.js"></script>
-
-  <!-- BOTÓN FLOTANTE → Catálogo Envases -->
-  <a class="fab-link" href="flipbook.html" title="Ver Catálogo de Envases">
-    <div class="fab-icon">📦</div>
-    <div class="fab-text">
-      <span class="fab-label">Catálogo</span>
-      <span class="fab-sub">Envases →</span>
-    </div>
-  </a>
 
 </body>
 </html>
