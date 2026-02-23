@@ -649,8 +649,17 @@
       gap:14px; text-align:center; padding:32px 24px;
     }
 
-    /* Producto móvil */
-    .mobile-product { background: #040d20; }
+    /* Página móvil Turn.js */
+    .mob-page {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .mob-page.page-cover, .mob-page.page-back, .mob-page.page-category {
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:12px; text-align:center; padding:28px 20px;
+    }
 
     /* Header strip */
     .mob-header {
@@ -938,150 +947,170 @@
     }
 
     // ═══════════════════════════════════════
-    // MÓVIL - carrusel swipe
+    // MÓVIL - Turn.js single page flip
     // ═══════════════════════════════════════
-    function initMobile(data, fb){
-      // Ocultar nav de escritorio, usar mobile nav
-      document.querySelector('.nav-controls').style.display = 'none';
-      document.querySelector('.site-footer').style.display = 'none';
+    function buildMobileProduct(prod){
+      const p  = prod.precios || {};
+      const p1 = p["1_4"]   || prod.precio || 0;
+      const p2 = p["5_9"]   || prod.precio || 0;
+      const p3 = p["10mas"] || prod.precio || 0;
+      const ml   = prod.ml || "";
+      const unid = prod.unidades_caja || "";
+      const nota = prod.nota || "";
+      const ahorro = p1 - p3;
+      const porcAhorro = Math.round((ahorro / p1) * 100);
+      const precioAntes = Math.round(p1 * 1.15 / 100) * 100;
+      const bgColor   = prod.color_fondo  || "#040d20";
+      const glowColor = prod.color_glow   || "rgba(0,212,255,0.15)";
+      const msg  = encodeURIComponent(`Hola Sweet Fragrance 👋\nMe interesa: *${prod.nombre}${ml?" "+ml+"ml":""}*\n¿Precio y disponibilidad?`);
+      const waUrl = `https://wa.me/${WHATSAPP}?text=${msg}`;
+      const ph = `https://placehold.co/400x300/040d20/00d4ff?text=${encodeURIComponent(prod.nombre)}`;
 
-      // Construir carrusel
+      return `<div class="mob-page" style="background:linear-gradient(180deg,${bgColor} 0%,#010a18 100%);overflow-y:auto;">
+        <div class="mob-header">
+          <img src="logo.png" alt="" class="mob-logo">
+          <span class="mob-brand">Sweet Fragrance</span>
+          <span class="mob-iva">✦ IVA Incluido</span>
+        </div>
+        <div class="mob-img-wrap" style="background:radial-gradient(ellipse at 50% 60%,${bgColor},#010a18 100%)">
+          <div class="prod-urgency">
+            <span class="urgency-tag tag-hot">🔥 Más vendido</span>
+            <span class="urgency-tag tag-stock">⚡ Stock limitado</span>
+          </div>
+          <img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.src='${ph}'">
+          ${ml?`<div class="prod-ml">${ml}<br>ML</div>`:""}
+          ${unid?`<div class="prod-unid">${unid}<br>UNID.</div>`:""}
+          <div class="prod-podium">
+            <div class="prod-podium-stage"><div class="prod-podium-shine"></div></div>
+            <div class="prod-podium-base"></div>
+          </div>
+        </div>
+        <div class="mob-name" style="border-left:4px solid ${glowColor}">
+          <div class="prod-name-label">Envase</div>
+          <div class="prod-name-title">${prod.nombre}</div>
+          ${ml?`<div class="prod-name-ml">${ml} ML · Caja Surtida</div>`:""}
+        </div>
+        <div class="prod-price-hero">
+          <div class="price-from">
+            <span class="price-desde">Desde</span>
+            <span class="price-tachado">${cop(precioAntes)}</span>
+            <span class="price-actual">${cop(p1)} <span class="price-cu">c/u</span></span>
+          </div>
+          <div class="price-saving">
+            <div class="saving-label">Ahorro máximo</div>
+            <div class="saving-amount">${cop(ahorro)}</div>
+            <div class="saving-desc">${porcAhorro}% · 10+ cajas</div>
+          </div>
+        </div>
+        <div class="prod-social">
+          <span class="social-stars">★★★★★</span>
+          <span class="social-text"><strong>+120 clientes</strong> satisfechos</span>
+          <span class="social-badge">🏪 MAYORISTA</span>
+        </div>
+        <div class="prod-body">
+          ${nota?`<div class="prod-nota">*${nota}</div>`:""}
+          <div class="tabla-wrap">
+            <div class="tabla-header">${boxIcon} Precio por unidad</div>
+            <table class="precio-table">
+              <tr><td class="pt-rango"><span class="pt-dot dot-1"></span>1–4 Cajas</td><td class="pt-precio p1">${cop(p1)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
+              <tr><td class="pt-rango"><span class="pt-dot dot-2"></span>5–9 Cajas</td><td class="pt-precio p2">${cop(p2)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
+              <tr style="background:rgba(255,213,102,0.06)"><td class="pt-rango"><span class="pt-dot dot-3"></span>10+ Cajas <span style="font-size:0.5rem;color:var(--gold)">★</span></td><td class="pt-precio p3">${cop(p3)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
+            </table>
+          </div>
+          <a class="prod-btn" href="${waUrl}" target="_blank" rel="noopener">${waIcon} ¡Quiero este precio ahora!</a>
+        </div>
+      </div>`;
+    }
+
+    function initMobile(data, fb){
       const scene = document.querySelector('.flipbook-scene');
-      scene.style.background = 'none';
-      scene.style.padding = '0';
+      scene.style.cssText = 'background:none;padding:0;width:100%;display:flex;flex-direction:column;align-items:center;';
       scene.innerHTML = '';
 
-      const carousel = document.createElement('div');
-      carousel.className = 'mobile-carousel';
+      // Calcular dimensiones: página ocupa todo el ancho
+      const pw = window.innerWidth;
+      const ph = window.innerHeight - 72; // menos topbar
+
+      document.documentElement.style.setProperty('--pw', pw + 'px');
+      document.documentElement.style.setProperty('--ph', ph + 'px');
+
+      const mobFb = document.createElement('div');
+      mobFb.id = 'mob-flipbook';
+      scene.appendChild(mobFb);
 
       // Portada
-      carousel.innerHTML += `
-        <div class="mobile-slide mobile-cover">
-          <div class="cr cr1"></div><div class="cr cr2"></div><div class="cr cr3"></div>
-          <img src="logo.png" class="cover-logo" alt="">
-          <div class="cover-brand">Sweet Fragrance</div>
-          <div class="cover-sub">Distribuciones · Envases Premium</div>
-          <div class="cover-pill">📦 Catálogo de Envases</div>
-          <div class="cover-year">COLECCIÓN 2025</div>
-          <div style="font-size:0.7rem;color:rgba(0,212,255,0.5);letter-spacing:0.1em;margin-top:8px;animation:blink 2s infinite">Desliza hacia abajo ↓</div>
-        </div>`;
+      mobFb.innerHTML += `<div class="mob-page page-cover" style="height:${ph}px">
+        <div class="cr cr1"></div><div class="cr cr2"></div><div class="cr cr3"></div>
+        <img src="logo.png" alt="" class="cover-logo">
+        <div class="cover-brand">Sweet Fragrance</div>
+        <div class="cover-sub">Distribuciones · Envases Premium</div>
+        <div class="cover-pill">📦 Catálogo de Envases</div>
+        <div class="cover-year">COLECCIÓN 2025</div>
+        <div style="font-size:0.72rem;color:rgba(0,212,255,0.5);letter-spacing:0.1em;margin-top:10px;animation:blink 2s infinite">Toca el borde para pasar →</div>
+      </div>`;
+
+      // Índice
+      const catItems = data.map((p,i) => `
+        <div class="cat-item">
+          <div class="cat-item-icon">📦</div>
+          <div class="cat-item-info">
+            <span class="cat-item-name">${p.nombre}</span>
+            <span class="cat-item-sub">${p.ml||""} ML · ${p.unidades_caja||""} unid/caja</span>
+          </div>
+          <span class="cat-item-page">Pág. ${i+2} →</span>
+        </div>`).join('');
+      mobFb.innerHTML += `<div class="mob-page page-category" style="height:${ph}px">
+        <img src="logo.png" alt="" class="cat-logo">
+        <div class="cat-title">Sweet Fragrance</div>
+        <div class="cat-heading">Índice de<br>Productos</div>
+        <div class="cat-divider"></div>
+        <div class="cat-list">${catItems}</div>
+        <div class="cat-iva" style="margin-top:12px">✦ IVA Incluido ✦</div>
+      </div>`;
 
       // Productos
       data.forEach(prod => {
-        const p  = prod.precios || {};
-        const p1 = p["1_4"]   || prod.precio || 0;
-        const p2 = p["5_9"]   || prod.precio || 0;
-        const p3 = p["10mas"] || prod.precio || 0;
-        const ml   = prod.ml || "";
-        const unid = prod.unidades_caja || "";
-        const nota = prod.nota || "";
-        const ahorro = p1 - p3;
-        const porcAhorro = Math.round((ahorro / p1) * 100);
-        const precioAntes = Math.round(p1 * 1.15 / 100) * 100;
-        const bgColor   = prod.color_fondo  || "#040d20";
-        const glowColor = prod.color_glow   || "rgba(0,212,255,0.15)";
-        const msg  = encodeURIComponent(`Hola Sweet Fragrance 👋\nMe interesa: *${prod.nombre}${ml?" "+ml+"ml":""}*\n¿Precio y disponibilidad?`);
-        const waUrl = `https://wa.me/${WHATSAPP}?text=${msg}`;
-        const ph = `https://placehold.co/400x300/040d20/00d4ff?text=${encodeURIComponent(prod.nombre)}`;
-
-        carousel.innerHTML += `
-          <div class="mobile-slide mobile-product" style="background:linear-gradient(180deg,${bgColor} 0%,#010a18 100%)">
-            <!-- Header -->
-            <div class="mob-header">
-              <img src="logo.png" alt="" class="mob-logo">
-              <span class="mob-brand">Sweet Fragrance</span>
-              <span class="mob-iva">✦ IVA Incluido</span>
-            </div>
-
-            <!-- Imagen -->
-            <div class="mob-img-wrap" style="background:radial-gradient(ellipse at 50% 60%,${bgColor},#010a18 100%)">
-              <div class="prod-urgency">
-                <span class="urgency-tag tag-hot">🔥 Más vendido</span>
-                <span class="urgency-tag tag-stock">⚡ Stock limitado</span>
-              </div>
-              <img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.src='${ph}'">
-              ${ml?`<div class="prod-ml">${ml}<br>ML</div>`:""}
-              ${unid?`<div class="prod-unid">${unid}<br>UNID.</div>`:""}
-              <div class="prod-podium">
-                <div class="prod-podium-stage"><div class="prod-podium-shine"></div></div>
-                <div class="prod-podium-base"></div>
-              </div>
-            </div>
-
-            <!-- Nombre -->
-            <div class="mob-name" style="border-left:4px solid ${glowColor}">
-              <div class="prod-name-label">Envase</div>
-              <div class="prod-name-title">${prod.nombre}</div>
-              ${ml?`<div class="prod-name-ml">${ml} ML · Caja Surtida</div>`:""}
-            </div>
-
-            <!-- Precio hero -->
-            <div class="prod-price-hero">
-              <div class="price-from">
-                <span class="price-desde">Desde</span>
-                <span class="price-tachado">${cop(precioAntes)}</span>
-                <span class="price-actual">${cop(p1)} <span class="price-cu">c/u</span></span>
-              </div>
-              <div class="price-saving">
-                <div class="saving-label">Ahorro máximo</div>
-                <div class="saving-amount">${cop(ahorro)}</div>
-                <div class="saving-desc">${porcAhorro}% comprando 10+ cajas</div>
-              </div>
-            </div>
-
-            <!-- Social -->
-            <div class="prod-social">
-              <span class="social-stars">★★★★★</span>
-              <span class="social-text"><strong>+120 clientes</strong> satisfechos</span>
-              <span class="social-badge">🏪 MAYORISTA</span>
-            </div>
-
-            <!-- Precios -->
-            <div class="prod-body">
-              ${nota?`<div class="prod-nota">*${nota}</div>`:""}
-              <div class="tabla-wrap">
-                <div class="tabla-header">${boxIcon} Precio por unidad</div>
-                <table class="precio-table">
-                  <tr><td class="pt-rango"><span class="pt-dot dot-1"></span>1–4 Cajas</td><td class="pt-precio p1">${cop(p1)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
-                  <tr><td class="pt-rango"><span class="pt-dot dot-2"></span>5–9 Cajas</td><td class="pt-precio p2">${cop(p2)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
-                  <tr style="background:rgba(255,213,102,0.06)"><td class="pt-rango"><span class="pt-dot dot-3"></span>10+ Cajas <span style="font-size:0.5rem;color:var(--gold)">★</span></td><td class="pt-precio p3">${cop(p3)} <small style="opacity:0.6;font-size:0.6rem">c/u</small></td></tr>
-                </table>
-              </div>
-              <a class="prod-btn" href="${waUrl}" target="_blank" rel="noopener">${waIcon} ¡Quiero este precio ahora!</a>
-            </div>
-          </div>`;
+        mobFb.innerHTML += buildMobileProduct(prod);
       });
 
       // Contraportada
       const msgBack = encodeURIComponent("Hola Sweet Fragrance 👋\nQuiero información sobre sus envases.");
-      carousel.innerHTML += `
-        <div class="mobile-slide mobile-cover" style="background:linear-gradient(160deg,#030d1e,#000510)">
-          <div class="cr cr1"></div><div class="cr cr2"></div>
-          <img src="logo.png" alt="" class="back-logo">
-          <div class="back-brand">Sweet Fragrance</div>
-          <div class="back-line"></div>
-          <div class="back-text">Envases premium · Precios por volumen<br>IVA incluido · Entrega inmediata</div>
-          <a class="back-wa" href="https://wa.me/${WHATSAPP}?text=${msgBack}" target="_blank">${waIcon} Contáctanos</a>
-          <div class="back-iva">✦ IVA Incluido ✦</div>
-          <a class="fab-link" href="index.html" style="position:relative;bottom:auto;left:auto;margin-top:16px;">
-            <div class="fab-icon">🌸</div>
-            <div class="fab-text"><span class="fab-label">Catálogo</span><span class="fab-sub">Perfumes →</span></div>
-          </a>
-        </div>`;
+      mobFb.innerHTML += `<div class="mob-page page-back" style="height:${ph}px">
+        <div class="cr cr1"></div><div class="cr cr2"></div>
+        <img src="logo.png" alt="" class="back-logo">
+        <div class="back-brand">Sweet Fragrance</div>
+        <div class="back-line"></div>
+        <div class="back-text">Envases premium · Precios por volumen<br>IVA incluido · Entrega inmediata</div>
+        <a class="back-wa" href="https://wa.me/${WHATSAPP}?text=${msgBack}" target="_blank">${waIcon} Contáctanos</a>
+        <div class="back-iva">✦ IVA Incluido ✦</div>
+      </div>`;
 
-      scene.appendChild(carousel);
+      const totalMob = mobFb.children.length;
 
-      // Contador móvil
-      const mobCounter = document.createElement('div');
-      mobCounter.className = 'mob-counter';
-      mobCounter.innerHTML = `<span id="mob-current">1</span> / <span id="mob-total">${data.length + 2}</span>`;
-      scene.appendChild(mobCounter);
+      // Init Turn.js modo single
+      $(mobFb).turn({
+        width:  pw,
+        height: ph,
+        autoCenter: true,
+        display: "single",
+        acceleration: true,
+        gradients: true,
+        elevation: 50,
+        when: {
+          turned: function(e, page){
+            document.getElementById('mob-cur').textContent = page;
+            document.getElementById('mob-btn-prev').disabled = (page <= 1);
+            document.getElementById('mob-btn-next').disabled = (page >= totalMob);
+          }
+        }
+      });
 
-      // Scroll listener para actualizar contador
-      carousel.addEventListener('scroll', () => {
-        const idx = Math.round(carousel.scrollTop / window.innerHeight) + 1;
-        document.getElementById('mob-current').textContent = idx;
-      }, {passive:true});
+      // Nav móvil
+      document.querySelector('.nav-controls').innerHTML = `
+        <button class="nav-btn" id="mob-btn-prev" disabled onclick="$('#mob-flipbook').turn('previous')">← Ant.</button>
+        <span class="nav-label"><span id="mob-cur">1</span> / ${totalMob}</span>
+        <button class="nav-btn" id="mob-btn-next" onclick="$('#mob-flipbook').turn('next')">Sig. →</button>
+      `;
 
       setTimeout(() => document.getElementById("loader").style.display = "none", 600);
     }
