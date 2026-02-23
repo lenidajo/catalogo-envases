@@ -928,19 +928,28 @@
 
       const totalMob = mobFb.children.length;
 
-      $(mobFb).turn({
-        width: pw, height: ph,
-        autoCenter: true, display: "single",
-        acceleration: true, gradients: true, elevation: 50,
-        when: {
-        turned(e, page) {
-        const cur = document.getElementById('mob-cur');
-        if (cur) cur.textContent = page;
-            document.getElementById('mob-btn-prev').disabled = (page <= 1);
-            document.getElementById('mob-btn-next').disabled = (page >= totalMob);
+        // ✅ Nav ANTES de Turn.js
+        document.querySelector('.nav-controls').innerHTML = `
+          <button class="nav-btn" id="mob-btn-prev" disabled onclick="$('#mob-flipbook').turn('previous')">← Ant.</button>
+          <span class="nav-label"><span id="mob-cur">1</span> / ${totalMob}</span>
+          <button class="nav-btn" id="mob-btn-next" onclick="$('#mob-flipbook').turn('next')">Sig. →</button>`;
+
+        // ✅ Turn.js DESPUÉS con null-checks
+        $(mobFb).turn({
+          width: pw, height: ph,
+          autoCenter: true, display: "single",
+          acceleration: true, gradients: true, elevation: 50,
+          when: {
+            turned(e, page) {
+              const cur = document.getElementById('mob-cur');
+              const prev = document.getElementById('mob-btn-prev');
+              const next = document.getElementById('mob-btn-next');
+              if(cur)  cur.textContent  = page;
+              if(prev) prev.disabled    = (page <= 1);
+              if(next) next.disabled    = (page >= totalMob);
+            }
           }
-        }
-      });
+        });
 
       document.querySelector('.nav-controls').innerHTML = `
         <button class="nav-btn" id="mob-btn-prev" disabled onclick="$('#mob-flipbook').turn('previous')">← Ant.</button>
