@@ -1038,6 +1038,9 @@
       mobFb.id = 'mob-flipbook';
       scene.appendChild(mobFb);
 
+      // Pág 1 vacía para que portada quede sola en modo doble al inicio
+      // (en single mode no importa pero lo dejamos consistente)
+
       // Portada
       mobFb.innerHTML += `<div class="mob-page page-cover" style="height:${ph}px">
         <div class="cr cr1"></div><div class="cr cr2"></div><div class="cr cr3"></div>

@@ -471,3 +471,174 @@ body {
   .logo-img { width: 70px; height: 70px; }
   .logo-name { font-size: 1.2rem; }
 }
+
+/* ── CARD ENHANCEMENTS (sales psychology) ── */
+
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0,212,255,0.12);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.1);
+}
+
+/* Urgency on card */
+.card-urgency {
+  position: absolute; top: 10px; left: 10px; z-index: 4;
+  display: flex; flex-direction: column; gap: 5px;
+}
+
+/* Podium in card */
+.card-podium {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 46px; z-index: 2;
+}
+.podium-stage {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  width: 80%; height: 22px;
+  background: linear-gradient(180deg, #e8c547 0%, #a07c10 50%, #7a5c00 100%);
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 -6px 24px rgba(201,162,39,0.5), inset 0 1px 0 rgba(255,235,120,0.6);
+}
+.podium-base {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 92%; height: 14px;
+  background: linear-gradient(180deg, #7a5c00 0%, #4a3800 100%);
+  border-radius: 3px 3px 0 0;
+}
+.podium-shine {
+  position: absolute; top: 3px; left: 8%; right: 8%; height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(255,240,150,0.7), transparent);
+  border-radius: 2px;
+}
+
+/* Card image with blend for white bg removal */
+.card-img-wrap {
+  position: relative; height: 240px;
+  overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: #040d20;
+}
+.card-img-wrap img {
+  width: 78%; max-height: 190px;
+  object-fit: contain; display: block;
+  position: relative; z-index: 3;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.7));
+  margin-bottom: 38px;
+  mix-blend-mode: normal;
+}
+
+/* Name banner */
+.card-name-banner {
+  padding: 10px 14px 7px;
+  border-bottom: 1px solid rgba(0,212,255,0.1);
+  flex-shrink: 0;
+}
+.card-name-label {
+  font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--cyan); opacity: 0.65; margin-bottom: 2px;
+}
+.card-name {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 900;
+  color: var(--text); line-height: 1.1;
+}
+.card-name-ml {
+  font-size: 0.68rem; color: var(--cyan); font-weight: 600;
+  letter-spacing: 0.08em; margin-top: 2px; opacity: 0.85;
+}
+
+/* Price hero */
+.card-price-hero {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0,212,255,0.08);
+  flex-shrink: 0;
+}
+.price-from { display: flex; flex-direction: column; gap: 1px; }
+.price-desde { font-size: 0.56rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.price-tachado { font-family: var(--font-head); font-size: 0.75rem; color: var(--muted); text-decoration: line-through; opacity: 0.55; }
+.price-actual { font-family: var(--font-head); font-size: 1.3rem; font-weight: 900; color: #ffd566; line-height: 1; }
+.price-cu { font-size: 0.58rem; color: var(--muted); }
+.price-saving {
+  background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.25);
+  border-radius: 10px; padding: 6px 10px; text-align: center;
+}
+.saving-label { font-size: 0.55rem; color: rgba(37,211,102,0.8); letter-spacing: 0.08em; text-transform: uppercase; }
+.saving-amount { font-family: var(--font-head); font-size: 0.82rem; font-weight: 800; color: #25D366; }
+.saving-desc { font-size: 0.57rem; color: var(--muted); }
+
+/* Social proof */
+.card-social {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 14px;
+  background: rgba(255,213,102,0.04);
+  border-bottom: 1px solid rgba(255,213,102,0.08);
+  flex-shrink: 0;
+}
+.social-stars { color: #ffd566; font-size: 0.68rem; }
+.social-text  { font-size: 0.63rem; color: var(--muted); }
+.social-text strong { color: var(--text); }
+.social-badge {
+  margin-left: auto; font-family: var(--font-head);
+  font-size: 0.5rem; font-weight: 700; letter-spacing: 0.08em;
+  color: #ffd566; border: 1px solid rgba(255,213,102,0.28);
+  background: rgba(255,213,102,0.07); padding: 3px 7px; border-radius: 100px;
+}
+
+/* Card body */
+.card-body {
+  padding: 10px 14px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.card-nota { font-size: 0.67rem; color: var(--muted); font-style: italic; }
+
+/* WhatsApp button */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white; text-decoration: none;
+  border-radius: 10px; font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 0.02em; font-family: var(--font-body);
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+}
+.btn:hover { opacity: 0.88; transform: scale(0.97); }
+
+/* Urgency tags (shared with flipbook) */
+.urgency-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-head); font-size: 0.56rem; font-weight: 700;
+  letter-spacing: 0.05em; padding: 4px 9px; border-radius: 100px;
+  white-space: nowrap;
+  animation: pulse-tag 2s ease-in-out infinite;
+}
+.tag-hot   { background: linear-gradient(135deg,#ff4500,#ff6b00); color:white; box-shadow:0 0 12px rgba(255,69,0,0.45); }
+.tag-stock { background: rgba(26,10,0,0.9); color:#ffaa44; border:1px solid rgba(255,140,0,0.35); }
+
+@keyframes pulse-tag {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+/* Price table shared */
+.tabla-wrap { background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.13); border-radius:10px; overflow:hidden; }
+.tabla-header { background:linear-gradient(90deg,rgba(0,212,255,0.13),rgba(0,212,255,0.06)); padding:7px 12px; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--cyan); font-weight:700; display:flex; align-items:center; gap:5px; }
+.precio-table { width:100%; border-collapse:collapse; }
+.precio-table tr { border-bottom:1px solid rgba(0,212,255,0.07); }
+.precio-table tr:last-child { border-bottom:none; }
+.precio-table td { padding:8px 12px; font-size:0.82rem; vertical-align:middle; }
+.pt-rango { color:var(--muted); white-space:nowrap; width:55%; }
+.pt-dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:6px; vertical-align:middle; }
+.dot-1 { background:#e8f4ff; }
+.dot-2 { background:#00d4ff; box-shadow:0 0 5px #00d4ff; }
+.dot-3 { background:#ffd566; box-shadow:0 0 5px #ffaa00; }
+.pt-precio { font-family:var(--font-head); font-weight:800; font-size:0.88rem; text-align:right; }
+.pt-precio.p1 { color:#e8f4ff; }
+.pt-precio.p2 { color:#00d4ff; }
+.pt-precio.p3 { color:#ffd566; }
