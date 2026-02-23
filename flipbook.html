@@ -830,7 +830,8 @@
       fb.innerHTML += buildBack();
 
       const total = fb.children.length;
-      document.getElementById("page-total").textContent = total;
+      const pt = document.getElementById("page-total");
+      if (pt) pt.textContent = total;
 
       $(fb).turn({
         width: bookW, height: ph,
@@ -838,7 +839,8 @@
         acceleration: true, gradients: true, elevation: 60,
         when: {
           turned(e, page) {
-            document.getElementById("page-num").textContent = page;
+            const pn = document.getElementById("page-num");
+            if (pn) pn.textContent = page;
             updateNav(page, total);
             updateLabel(page, total, data.length);
           }
@@ -931,8 +933,9 @@
         autoCenter: true, display: "single",
         acceleration: true, gradients: true, elevation: 50,
         when: {
-          turned(e, page) {
-            document.getElementById('mob-cur').textContent = page;
+        turned(e, page) {
+        const cur = document.getElementById('mob-cur');
+        if (cur) cur.textContent = page;
             document.getElementById('mob-btn-prev').disabled = (page <= 1);
             document.getElementById('mob-btn-next').disabled = (page >= totalMob);
           }
