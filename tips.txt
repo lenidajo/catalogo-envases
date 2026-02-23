@@ -1,0 +1,4 @@
+📦 Catálogo Envases → https://lenidajo.github.io/catalogo-envases/flipbook.html
+🌸 Catálogo Perfumes → https://lenidajo.github.io/catalogo-envases/index.html
+
+Abrir local:http://localhost:5500/flipbook.html
