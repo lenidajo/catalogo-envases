@@ -1140,7 +1140,8 @@
         fb.innerHTML += buildBack();
 
         const totalPages = fb.children.length;
-        document.getElementById("page-total").textContent = totalPages;
+        const ptEl = document.getElementById("page-total");
+        if(ptEl) ptEl.textContent = totalPages;
 
         $(fb).turn({
           width:  bookW,
@@ -1152,7 +1153,8 @@
           elevation: 60,
           when: {
             turned: function(e, page){
-              document.getElementById("page-num").textContent = page;
+              const pn = document.getElementById("page-num");
+              if(pn) pn.textContent = page;
               updateNav(page, totalPages);
               updateLabel(page, totalPages, data.length);
             }
@@ -1180,12 +1182,15 @@
     }
 
     function updateNav(page, total){
-      document.getElementById("btn-prev").disabled = (page <= 1);
-      document.getElementById("btn-next").disabled = (page >= total);
+      const prev = document.getElementById("btn-prev");
+      const next = document.getElementById("btn-next");
+      if(prev) prev.disabled = (page <= 1);
+      if(next) next.disabled = (page >= total);
     }
 
     function updateLabel(page, total, prodCount){
       const lbl = document.getElementById("nav-label");
+      if(!lbl) return;
       if(page === 1) lbl.textContent = "Portada";
       else if(page >= total) lbl.textContent = "Contraportada";
       else lbl.textContent = `Hoja ${Math.ceil((page-1)/2)} de ${Math.ceil(prodCount/2)}`;
